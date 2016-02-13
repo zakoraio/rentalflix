@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +37,27 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	@Autowired
 	MovieService movieService;
 
+	List<Movie> movies;
 	
-	@Test
-	public void testFindAllReturningAllMovies() {
-
-		List<Movie> movies = new ArrayList<Movie>();
+	@Before
+	public void setUpData(){
+		movies = new ArrayList<Movie>();
 		loadMovies(movies);
 		
 		for(Movie movie:movies){
 			movieService.create(movie);
 		}
-		
+	}
+	
+	
+	@After
+	public void tearDownData(){
+		movieService = null;
+		movies = null;
+	}
+	@Test
+	public void testFindAllReturningAllMovies() {
+
 		assertEquals(movieService.findAll().size(),movies.size());
 
 	}
@@ -53,13 +65,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void testFindAllMovieEquals(){
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
-		
 		List<Movie> foundMovies = movieService.findAll();
 		for(Movie movie:movies){
 			assertEquals(true,foundMovies.contains(movie));
@@ -71,14 +76,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	@Test
 	public void testFindByNameForMovieNotPresent() {
 
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
-		
-		
 		assertNull(movieService.findByName("Inception"));
 
 	}
@@ -86,12 +83,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	@Test
 	public void testFindByNameForMoviePresent() {
 
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		List<Movie> tempList = new ArrayList<Movie>();
 		
@@ -109,13 +100,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	@Test
 	public void testFindByNameForMoviePresentCaseInsensitive() {
 
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
-		
 		List<Movie> tempList = new ArrayList<Movie>();
 		
 		Movie movie = new Movie();
@@ -130,12 +114,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void testUpdateorMoviePresent() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		List<Movie> tempList = new ArrayList<Movie>();
 		Movie movie = new Movie();
@@ -155,12 +133,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testUpdateForMovieNotPresent() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		Movie movie = new Movie();
 		movie.setId(7);
@@ -173,26 +145,14 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testDeleteForMovieNotPresent() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		movieService.delete(7);
+		
 	}
 	
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testDeleteForMoviePresent() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
-		
 		assertEquals("Crouching Tiger and Hidden Dragon",movieService.findByName("CROUCHING TIGER AND HIDDEN DRAGON").get(0).getTitle());
 		
 		Movie movie = new Movie();
@@ -208,12 +168,6 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testRentMovieNotPresent() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		movieService.rentMovie(7, "Saurabh Rai");
 	}
@@ -221,24 +175,12 @@ public class MovieServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void testRentMoviePresentAndNotAlreadyRented() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		assertEquals(true,movieService.rentMovie(1, "Saurabh Rai"));
 	}
 	
 	@Test
 	public void testRentMoviePresentAndAlreadyRented() {
-		List<Movie> movies = new ArrayList<Movie>();
-		loadMovies(movies);
-		
-		for(Movie movie:movies){
-			movieService.create(movie);
-		}
 		
 		movieService.rentMovie(1, "Saurabh Rai");
 		
