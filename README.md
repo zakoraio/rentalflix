@@ -1,11 +1,7 @@
 # rentalflix
 Java assessment for new training candidates.
 
-1. Fork this repository on your own github account.
-1. Clone the forked repository in your local machine.
-1. Import the project in any Java IDE.
-1. Develop MovieService by implementing IFlix interface. Instructions are given in IFlix.java
-1. Use any Java collection type in MovieService to store movies.
-1. Write JUnit test cases for MovieService in MovieServiceTest file.
-1. Keep in mind about possibilities of concurrent access to MovieService.
-1. Once completed, DIRECT MESSAGE Praveen on slack with the link of the repo.
+1. Instead of using collections I used HSQL DB to store the movie and Renatal records.
+2. Used Hibernate to to update and store the records in the movies and renta;record tables.
+3. Integrated hibernate with Spring to manage the beans and provide Transaction support.
+4. TestClass uses SpringJUnit4ClassRunner and Springs transaction support to do integration testingof service layer with the dao layer.
